@@ -5,7 +5,7 @@ from customer.customer_model import Customer
 from product.product_model import Product, ProductCategoryEnum
 from order.order_model_module import Order
 from repository.inmemoryrepository import InMemoryRepository
-from src.repository.payment_ptotocol import (
+from repository.payment_protocol import (
     Payment,
     PaymentMStatus,
     PaymentMethodEnum,

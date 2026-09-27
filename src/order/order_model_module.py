@@ -21,11 +21,13 @@ class OrderStatusEnum(Enum):
 @dataclass
 class Order:
     customer: Customer
-    discount : Decimal = field(init=False, default=Decimal("0.00"))
+    discount: Decimal = field(init=False, default=Decimal("0.00"))
     items: list[OrderItem] = field(default_factory=list)
-    order_id :UUID = field(init=False, default_factory=uuid4)
+    order_id: UUID = field(init=False, default_factory=uuid4)
     status: OrderStatusEnum = OrderStatusEnum.PENDING
-    created_date: str = field(init=False, default_factory=lambda: datetime.today().isoformat())
+    created_date: str = field(
+        init=False, default_factory=lambda: datetime.today().isoformat()
+    )
 
     def add_item(self, order_item: OrderItem) -> OrderItem:
         if not isinstance(order_item, OrderItem):
@@ -46,14 +48,16 @@ class Order:
         return sum((item.subtotal() for item in self.items), Decimal("0.00"))
 
     def calculate_total(self) -> Decimal:
-        return self.calculate_subtotal()
+        return self.calculate_subtotal() - self.discount
 
-
-
-    def add_discount(self, amount:Decimal) -> None:
-        if not isinstance(amount,Decimal):
+    def add_discount(self, amount: Decimal) -> None:
+        if not isinstance(amount, Decimal):
             raise TypeError("Please insert a decimal num")
         if amount < 0:
             raise ValueError("Please insert a valid discount")
         self.discount = amount
 
+    def confirm_order(
+        self,
+    ) -> None:
+        self.status = OrderStatusEnum.PAID

@@ -46,7 +46,7 @@ class PaymentProcessor(ABC):
         if amount <= 0:
             raise ValueError("Amount should be more than zero")
         if customer is None or not isinstance(customer, Customer):
-            raise ValueError("Receuiver should be a valid")
+            raise ValueError("Receiver should be a valid")
 
         status = self._determine_status()
 

@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from order.order_model_module import Order
-from repository.payment_ptotocol import Payment
+from repository.payment_protocol import Payment
 
 
 class NotificationProtocol(Protocol):
