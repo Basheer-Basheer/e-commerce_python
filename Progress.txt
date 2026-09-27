@@ -1,0 +1,2222 @@
+E-COMMERCE ORDER MANAGEMENT SYSTEM
+===================================
+
+MAIN RULE:
+----------
+
+Do NOT move to the next phase until the current phase is:
+
+1. Implemented
+2. Tested
+3. Understood
+4. All tests are passing
+5. Marked as [DONE]
+
+The goal is NOT to finish quickly.
+
+The goal is to understand why every design decision exists.
+
+IMPORTANT:
+
+This project is NOT a copy of Fleet Rental.
+
+We will reuse some known concepts,
+but every major phase should introduce
+at least one new concept or deeper understanding.
+
+
+==================================================
+PROJECT GOAL
+==================================================
+
+Build a medium-sized E-Commerce Order Management
+System using Python.
+
+The system should allow:
+
+- Customers
+- Products
+- Inventory
+- Shopping Cart
+- Orders
+- Order Items
+- Discounts
+- Payments
+- Notifications
+- Reports
+- SQLite database
+- CLI application
+
+Main workflow:
+
+Customer
+   |
+   v
+Shopping Cart
+   |
+   +---- Product
+   |
+   v
+Checkout
+   |
+   +---- Discount
+   |
+   +---- Payment
+   |
+   +---- Inventory
+   |
+   v
+Order
+   |
+   v
+Notification
+
+
+==================================================
+PHASE 0 - PROJECT SETUP
+==================================================
+
+[ DONE ] Create project folder
+[ DONE ] Create virtual environment
+[ DONE ] Activate virtual environment
+[ DONE ] Install pytest
+[ DONE ] Create requirements.txt
+[ DONE ] Create .gitignore
+[ DONE ] Create README.md
+[ DONE ] Create src/
+[ DONE ] Create tests/
+[ DONE ] Create data/
+[ DONE ] Create src/__init__.py
+
+Create an initial project structure.
+
+CONCEPTS:
+
+- Virtual Environment
+- Packages
+- Project Structure
+- requirements.txt
+- .gitignore
+- pytest
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 1 -   
+==================================================
+
+Create:
+
+Product
+
+Fields:
+
+[ DONE ] UUID
+[ DONE ] name
+[ DONE ] description
+[ DONE ] price
+[ DONE ] category
+[ DONE ] stock
+[ DONE ] status
+
+Create:
+
+ProductStatus Enum
+
+Possible statuses:
+
+[ DONE ] ACTIVE
+[ DONE ] INACTIVE
+[ DONE ] DISCONTINUED
+
+Create:
+
+ProductCategory Enum
+
+Examples:
+
+[ DONE ] ELECTRONICS
+[ DONE ] CLOTHING
+[ DONE ] FOOD
+[ DONE ] HOME
+[ DONE ] OTHER
+
+Validation:
+
+[ DONE ] Product name cannot be empty
+[ DONE ] Price must be greater than zero
+[ DONE ] Stock must be greater or equal than zero
+
+Tests:
+
+[ DONE ] UUID generation
+[ DONE ] Default status
+[ DONE ] Valid Product
+[ DONE ] Invalid name
+[ DONE ] Invalid price
+[ DONE ] Invalid stock
+
+CONCEPTS:
+
+- Dataclasses
+- Enum
+- UUID
+- Validation
+- Type Hints
+- pytest
+
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 2 - MONEY AND DECIMAL
+==================================================
+
+IMPORTANT NEW CONCEPT.
+
+Do NOT use float for financial calculations.
+
+Learn:
+
+[ DONE ] Why float can cause financial precision problems
+[ DONE ] Decimal
+[ DONE ] Decimal arithmetic
+[ DONE ] Decimal comparison
+[ DONE ] Decimal rounding
+
+Change Product price to:
+
+Decimal
+
+Implement:
+
+[ DONE ] Product price using Decimal
+[ DONE ] Correct price calculations
+[ DONE ] Correct rounding
+
+Tests:
+
+[ DONE ] Decimal calculations
+[ DONE ] Price precision
+[ DONE ] Rounding behavior
+[ DONE ] Invalid Decimal values
+
+Example:
+
+10.10 + 20.20
+
+Understand why financial applications
+should not blindly use float.
+
+CONCEPTS:
+
+- decimal.Decimal
+- Precision
+- Financial calculations
+- Rounding
+- Numeric types
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 3 - CUSTOMER MODEL
+==================================================
+
+Create:
+
+Customer
+
+Fields:
+
+[ DONE ] UUID
+[ DONE ] name
+[ DONE ] email
+[ DONE ] phone
+[ DONE ] status
+
+Create:
+
+CustomerStatus Enum
+
+[ DONE ] ACTIVE
+[ DONE ] INACTIVE
+[ DONE ] BLOCKED
+
+Validation:
+
+[ DONE ] Name cannot be empty
+[ DONE ] Email cannot be empty
+[ DONE ] Phone cannot be empty
+
+Tests:
+
+[ DONE ] UUID generation
+[ DONE ] Valid customer
+[ DONE ] Default status
+[ DONE ] Invalid customer
+[ DONE ] Customer status
+
+CONCEPTS:
+
+- Dataclasses
+- Enum
+- UUID
+- Validation
+- Domain models
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 4 - PRODUCT BUSINESS RULES
+==================================================
+
+Create Product business behavior.
+
+Implement:
+
+[ DONE ] activate()
+[ DONE ] deactivate()
+[ DONE ] discontinue()
+
+Inventory behavior:
+
+[ DONE ] increase_stock()
+[ DONE ] decrease_stock()
+
+Rules:
+
+[ DONE ] Cannot decrease more than available stock
+[ DONE ] Cannot decrease negative quantity
+[ DONE ] Cannot increase negative quantity
+[ DONE ] Discontinued product cannot be sold
+[ DONE ] Inactive product cannot be purchased
+
+Create:
+
+InsufficientStockError
+
+Tests:
+
+[ DONE ] Stock increase
+[ DONE ] Stock decrease
+[ DONE ] Insufficient stock
+[ DONE ] Invalid quantity
+[ DONE ] Product activation
+[ DONE ] Product deactivation
+[ DONE ] Discontinuation
+
+NOTE (decided in planning review):
+increase_stock() / decrease_stock() here are simple,
+direct stock changes owned by Product itself.
+They are NOT the same as "reservation" (see Phase 16).
+Reservation is a multi-step workflow tied to order/checkout
+state, so it will NOT live inside Product - it will live in
+a dedicated InventoryService. We will confirm this design
+decision again when we reach Phase 16, but the plan is set now
+so it doesn't come as a surprise.
+
+CONCEPTS:
+
+- Business Rules
+- Domain behavior
+- State transitions
+- Custom Exceptions
+- Encapsulation
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 5 - ORDER ITEM
+==================================================
+
+IMPORTANT NEW DOMAIN CONCEPT.
+
+Create:
+
+OrderItem
+
+Relationship:
+
+OrderItem
+   |
+   +-- Product
+   |
+   +-- quantity
+   |
+   +-- unit_price
+
+Fields:
+
+[ DONE ] UUID
+[ DONE ] Product
+[ DONE ] quantity
+[ DONE ] unit_price
+
+Implement:
+
+[ DONE ] subtotal()
+
+Formula:
+
+subtotal =
+unit_price * quantity
+
+Rules:
+
+[ DONE ] Quantity must be greater than zero
+[ DONE ] Product must exist
+[ DONE ] Unit price must be valid
+
+Tests:
+
+[ DONE ] OrderItem creation
+[ DONE ] Quantity validation
+[ DONE ] Subtotal calculation
+[ DONE ] Product relationship
+
+CONCEPTS:
+
+- Composition
+- Object relationships
+- Encapsulation
+- Decimal
+- Domain modeling
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 6 - ORDER MODEL
+==================================================
+
+Create:
+
+Order
+
+Relationship:
+
+Order
+ |
+ +-- Customer
+ |
+ +-- OrderItem
+ |      |
+ |      +-- Product
+ |
+ +-- status
+
+Create:
+
+OrderStatus Enum
+
+[ DONE ] PENDING
+[ DONE ] CONFIRMED
+[ DONE ] PAID
+[ DONE ] SHIPPED
+[ DONE ] COMPLETED
+[ DONE ] CANCELLED
+
+Fields:
+
+[ DONE ] UUID
+[ DONE ] Customer
+[ DONE ] Items
+[ DONE ] Status
+[ DONE ] Created date
+
+Implement:
+
+[ DONE ] add_item()
+[ DONE ] remove_item()
+[ DONE ] calculate_subtotal()
+[ DONE ] calculate_total()
+
+Tests:
+
+[ DONE ] Order creation
+[ DONE ] Customer relationship
+[ DONE ] Add item
+[ DONE ] Remove item
+[ DONE ] Subtotal
+[ DONE ] Total
+[ DONE ] Default status
+
+CONCEPTS:
+
+- Composition
+- Aggregation
+- Lists of objects
+- Domain modeling
+- Dataclasses
+- datetime
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 7 - SHOPPING CART
+==================================================
+
+Create:
+
+Cart
+
+Relationship:
+
+Customer
+   |
+   v
+Cart
+   |
+   +-- CartItem
+          |
+          +-- Product
+
+Implement:
+
+[ DONE ] add_product()
+[ DONE ] remove_product()
+[ DONE ] update_quantity()
+[ DONE ] clear()
+[ DONE ] calculate_subtotal()
+[ DONE ] is_empty()
+
+Business rules:
+
+[ DONE ] Cannot add inactive product
+[ DONE ] Cannot add discontinued product
+[ DONE ] Cannot add zero quantity
+[ DONE ] Cannot add quantity greater than stock
+[ PENDING ] Adding same product increases quantity
+
+Tests:
+
+[ DONE ] Add product
+[ DONE ] Remove product
+[ DONE ] Update quantity
+[ DONE ] Clear cart
+[ DONE ] Empty cart
+[ DONE ] Same product behavior
+[ DONE ] Insufficient stock
+[ DONE ] Invalid quantity
+
+NOTE (decided in planning review):
+Cart is treated as transient / session state, not a
+permanently persisted entity like Order. This is why there
+is deliberately no CartRepository in Phase 8 - it's a design
+choice, not something missing.
+
+CONCEPTS:
+
+- Composition
+- Collections
+- Encapsulation
+- Business Logic
+- State management
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 8 - REPOSITORY PROTOCOLS
+==================================================
+
+Create abstractions for:
+
+[ ] ProductRepository
+[ ] CustomerRepository
+[ ] OrderRepository
+
+Define:
+
+[ ] add()
+[ ] get()
+[ ] get_all()
+[ ] remove()
+[ ] update()
+
+Understand:
+
+[ ] Why repositories are abstractions
+[ ] Why Services should not depend on SQLite directly
+[ ] Dependency Inversion
+[ ] Dependency Injection
+
+Architecture:
+
+Service
+   |
+   v
+Repository Protocol
+   |
+   v
+Concrete Repository
+
+NOTE: No CartRepository here on purpose - see note in Phase 7.
+
+CONCEPTS:
+
+- Protocol
+- Structural Typing
+- Repository Pattern
+- Dependency Inversion
+- Dependency Injection
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 9 - GENERIC IN-MEMORY REPOSITORY
+==================================================
+
+IMPORTANT NEW PYTHON CONCEPT.
+
+Learn:
+
+[ DONE ] What is TypeVar?
+[ DONE ] What is Generic?
+[ DONE ] What does Generic[T] mean?
+[ DONE ] Why use Generics?
+[ DONE ] Generic Class
+[ DONE ] Generic Repository
+[ DONE ] Type-safe repositories
+
+Create:
+
+[ DONE ] T = TypeVar("T")
+
+[ DONE ] GenericRepository[T]
+
+Implement:
+
+[ DONE ] add()
+[ DONE ] get()
+[ DONE ] get_all()
+[ DONE ] remove()
+[ DONE ] update()
+
+Use the same Generic Repository with:
+
+[ DONE ] Product
+[ DONE ] Customer
+[ DONE ] Order
+
+Understand why we can avoid creating:
+
+InMemoryProductRepository
+InMemoryCustomerRepository
+InMemoryOrderRepository
+
+when the behavior is identical.
+
+Tests:
+
+[ DONE ] Generic Product repository
+[ DONE ] Generic Customer repository
+[ DONE ] Generic Order repository
+[ DONE ] Missing object
+[ DONE ] Duplicate ID
+[ DONE ] Update
+[ DONE ] Remove
+
+NOTE (decided in planning review):
+Generics work cleanly for in-memory storage because the
+behavior is identical for every entity. This will NOT stay
+100% true once we reach JSON (Phase 19) and SQL (Phase 22) -
+each entity needs its own serialization/schema, so those
+repositories will only be "generic" at the Protocol/interface
+level, not at the implementation level. This is expected, not
+a design failure - we'll discuss it again when we get there.
+
+CONCEPTS:
+
+- TypeVar
+- Generic
+- Generic Class
+- Type Safety
+- Generic Repository
+- Reusability
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 10 - PRODUCT SERVICE
+==================================================
+
+NOTE: This phase was missing from the original plan
+(it jumped from Phase 9 straight to Phase 11 / Customer
+Service, with no dedicated phase for Product). Added here
+during planning review to keep the service layer consistent -
+Product needs the same service-layer treatment as Customer
+and Order.
+
+Create:
+
+ProductService
+
+Implement:
+
+[ DONE ] add_product()
+[ DONE ] get_product()
+[ DONE ] list_products()
+[ DONE ] remove_product()
+[ DONE ] update_product()
+[ DONE ] activate_product() / deactivate_product() / discontinue_product()
+      (delegates to the Product business rules built in Phase 4)
+
+Tests:
+
+[ DONE ] Successful operations
+[ DONE ] Missing product
+[ DONE ] Invalid product
+[ DONE ] Update product
+[ DONE ] Status transitions via the service
+
+CONCEPTS:
+
+- Service Layer
+- Repository Pattern
+- Dependency Injection
+- Exceptions
+- Reusing domain behavior from Phase 4 through a service
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 11 - CUSTOMER SERVICE
+==================================================
+
+Create:
+
+CustomerService
+
+Implement:
+
+[ DONE ] add_customer()
+[ DONE ] get_customer()
+[ DONE ] list_customers()
+[ DONE ] remove_customer()
+[ DONE ] update_customer()
+
+Tests:
+
+[ DONE ] Successful operations
+[ DONE ] Missing customer
+[ DONE ] Invalid customer
+[ DONE ] Update customer
+
+CONCEPTS:
+
+- Service Layer
+- Repository Pattern
+- Dependency Injection
+- Exceptions
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 12 - ORDER SERVICE
+==================================================
+
+Create:
+
+OrderService
+
+Implement:
+
+[ DONE ] create_order()
+[ DONE ] get_order()
+[ DONE ] list_orders()
+[ DONE ] add_item()
+[ DONE ] remove_item()
+[ DONE ] cancel_order()
+[ DONE ] confirm_order()
+
+Business rules:
+
+[ DONE ] Customer must exist
+[ DONE ] Product must exist
+[ DONE ] Product must be available
+[ DONE ] Stock must be sufficient
+[ DONE ] Quantity must be valid
+[ DONE ] Cancelled order cannot be modified
+[ DONE ] Completed order cannot be cancelled
+
+Tests:
+
+[ DONE ] Successful order
+[ DONE ] Missing customer
+[ DONE ] Missing product
+[ DONE ] Insufficient stock
+[ DONE ] Invalid quantity
+[ DONE ] Cancelled order
+[ DONE ] Completed order
+
+CONCEPTS:
+
+- Service Layer
+- Business Rules
+- Composition
+- State transitions
+- Exceptions
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 13 - STRATEGY PATTERN
+==================================================
+
+IMPORTANT NEW CONCEPT.
+
+Learn:
+
+Strategy Pattern.
+
+Create:
+
+DiscountStrategy
+
+Implement:
+
+[ DONE ] NoDiscount
+[ DONE ] PercentageDiscount
+[ DONE ] FixedDiscount
+
+Example:
+
+Order
+   |
+   v
+DiscountStrategy
+   |
+   +-- NoDiscount
+   +-- PercentageDiscount
+   +-- FixedDiscount
+
+Interface:
+
+[ DONE ] calculate_discount()
+
+Rules:
+
+Percentage:
+
+100 AED
+10%
+
+discount = 10 AED
+
+Fixed:
+
+100 AED
+20 AED discount
+
+Tests:
+
+[ DONE ] No discount
+[ DONE ] Percentage discount
+[ DONE ] Fixed discount
+[ DONE ] Invalid percentage
+[ DONE ] Invalid fixed discount
+[ DONE ] Discount cannot exceed order total
+
+CONCEPTS:
+
+- Strategy Pattern
+- Protocol / ABC
+- Polymorphism
+- Dependency Injection
+- Open/Closed Principle
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 14 - CHECKOUT SYSTEM
+==================================================
+
+Create:
+
+CheckoutService
+
+Workflow:
+
+Cart
+ |
+ v
+Validate items
+ |
+ v
+Calculate subtotal
+ |
+ v
+Apply discount
+ |
+ v
+Calculate final total
+ |
+ v
+Create Order
+
+Implement:
+
+[ DONE ] checkout()
+[ DONE ] calculate_subtotal()
+[ DONE ] calculate_discount()
+[ DONE ] calculate_total()
+
+Rules:
+
+[ DONE ] Cart cannot be empty
+[ DONE ] Products must still be available
+[ DONE ] Stock must still be sufficient
+[ DONE ] Correct discount applied
+[ DONE ] Correct final total
+
+Tests:
+
+[ DONE ] Successful checkout
+[ DONE ] Empty cart
+[ DONE ] Product unavailable
+[ DONE ] Insufficient stock
+[ DONE ] Discount calculation
+[ DONE ] Final total
+
+CONCEPTS:
+
+- Application Service
+- Service Composition
+- Strategy Pattern
+- Decimal
+- Business Workflow
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 15 - PAYMENT SYSTEM
+==================================================
+
+NOTE: In the real runtime workflow (see diagram in Phase 18),
+inventory is reserved BEFORE payment is processed. We are
+still building Payment before Inventory Reservation (Phase 16)
+because each phase focuses on building and testing ONE
+component in isolation. They only get wired together in their
+real runtime order during Phase 18. Keep this distinction in
+mind: "order we learn things" vs "order things execute".
+
+Create:
+
+Payment
+
+Fields:
+
+[ DONE ] UUID
+[ DONE ] Order
+[ DONE ] Amount
+[ DONE ] Payment method
+[ DONE ] Payment status
+[ DONE ] Created date
+
+Create:
+
+PaymentMethod:
+
+[ DONE ] CASH
+[ DONE ] VISA
+[ DONE ] BANK_TRANSFER
+[ DONE ] PAYPAL
+
+Create:
+
+PaymentStatus:
+
+[ DONE ] PENDING
+[ DONE ] SUCCESS
+[ DONE ] FAILED
+
+Create:
+
+PaymentProcessor Protocol
+
+Implement:
+
+[ DONE ] CashPaymentProcessor
+[ DONE ] VisaPaymentProcessor
+[ DONE ] BankPaymentProcessor
+[ DONE ] PayPalPaymentProcessor
+[ DONE ] FakePaymentProcessor
+
+Create:
+
+PaymentService
+
+Implement:
+
+[ DONE ] process_payment()
+
+Tests:
+
+[ DONE ] Successful payment
+[ DONE ] Failed payment
+[ DONE ] Invalid amount
+[ DONE ] Correct processor selected
+[ DONE ] Mock processor
+[ DONE ] Fake processor
+
+CONCEPTS:
+
+- Protocol
+- Strategy
+- Polymorphism
+- Dependency Injection
+- Mocking
+- Decimal
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 16 - INVENTORY RESERVATION
+==================================================
+
+IMPORTANT NEW BUSINESS CONCEPT.
+
+When checkout starts:
+
+Stock
+ |
+ v
+Reserve stock
+ |
+ v
+Payment
+ |
+ +---- SUCCESS -> Confirm reservation
+ |
+ +---- FAILURE -> Release reservation
+
+DESIGN DECISION (set during planning review, confirm again here):
+reserve_stock() / release_stock() / confirm_stock() will live in
+a dedicated InventoryService, NOT directly inside Product.
+Reason: reservation is not just "change a number" like
+increase_stock()/decrease_stock() in Phase 4 - it's a multi-step
+workflow that depends on order/checkout state and can be undone
+(released), so it belongs at the service/orchestration level,
+not inside the Product entity itself. We'll re-examine this
+decision together once we start implementing, not just take it
+as given.
+
+Implement:
+
+[ DONE ] reserve_stock()
+[ DONE ] release_stock()
+[ DONE ] confirm_stock()
+
+Rules:
+
+[ DONE ] Cannot reserve more than stock
+[ DONE ] Cannot reserve inactive product
+[ DONE ] Failed payment releases stock
+[ DONE ] Successful payment reduces stock permanently
+
+Tests:
+
+[ DONE ] Successful reservation
+[ DONE ] Failed reservation
+[ DONE ] Payment failure releases stock
+[ DONE ] Successful payment confirms stock
+[ DONE ] Insufficient stock
+
+CONCEPTS:
+
+- State management
+- Transactions concept
+- Business workflow
+- Failure recovery
+- Consistency
+
+----------------------------------------------
+STATUS: [ DONE ]
+----------------------------------------------
+
+
+==================================================
+PHASE 17 - NOTIFICATION SYSTEM
+==================================================
+
+Create Notification Protocol.
+
+Implement:
+
+[ DONE ] EmailNotification
+[ DONE ] SMSNotification
+[ DONE ] PushNotification
+[ DONE ] WhatsAppNotification
+
+Create:
+
+NotificationService
+
+Events:
+
+[ DONE ] Order created
+[ DONE ] Payment successful
+[ DONE ] Payment failed
+[ DONE ] Order cancelled
+[ DONE ] Order completed
+
+Use Dependency Injection.
+
+Tests:
+
+[ ] Email
+[ ] SMS
+[ ] Push
+[ ] WhatsApp
+[ ] Empty recipient
+[ ] Empty message
+[ ] Mock
+[ ] assert_called_once_with()
+
+CONCEPTS:
+
+- Protocol
+- Structural Typing
+- Dependency Injection
+- Mock
+- Polymorphism
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 18 - COMPLETE ORDER WORKFLOW
+==================================================
+
+Connect:
+
+Customer
+   |
+   v
+Cart
+   |
+   v
+Checkout
+   |
+   v
+Discount
+   |
+   v
+Inventory
+   |
+   v
+Payment
+   |
+   v
+Order
+   |
+   v
+Notification
+
+Implement complete workflow.
+
+[ ] Validate Customer
+[ ] Validate Cart
+[ ] Validate Products
+[ ] Validate Stock
+[ ] Calculate subtotal
+[ ] Apply discount
+[ ] Reserve inventory
+[ ] Process payment
+[ ] Create Order
+[ ] Confirm inventory
+[ ] Send notification
+
+Failure scenarios:
+
+[ ] Missing customer
+[ ] Empty cart
+[ ] Missing product
+[ ] Insufficient stock
+[ ] Payment failure
+[ ] Notification failure
+
+Tests:
+
+[ ] Complete successful workflow
+[ ] Payment failure
+[ ] Inventory failure
+[ ] Notification failure
+[ ] Correct rollback behavior
+[ ] Mock external dependencies
+
+IMPORTANT:
+
+Do NOT create dependencies directly
+inside services.
+
+Inject them.
+
+CONCEPTS:
+
+- Dependency Injection
+- Service Composition
+- Workflow orchestration
+- Failure recovery
+- Mocking
+- Business Logic
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 19 - JSON PERSISTENCE
+==================================================
+
+Learn:
+
+[ ] json.load()
+[ ] json.dump()
+[ ] Serialization
+[ ] Deserialization
+
+Create:
+
+[ ] JsonProductRepository
+[ ] JsonCustomerRepository
+[ ] JsonOrderRepository
+
+Create:
+
+[ ] data/products.json
+[ ] data/customers.json
+[ ] data/orders.json
+
+Handle:
+
+[ ] Missing file
+[ ] Empty file
+[ ] Invalid JSON
+[ ] Invalid object data
+
+Tests:
+
+[ ] Save
+[ ] Load
+[ ] Add
+[ ] Get
+[ ] Get all
+[ ] Remove
+[ ] Update
+[ ] Invalid JSON
+
+CONCEPTS:
+
+- File I/O
+- JSON
+- Serialization
+- Deserialization
+- Persistence
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 20 - SQLITE DATABASE
+==================================================
+
+Learn SQLite properly.
+
+Create tables:
+
+[ ] customers
+[ ] products
+[ ] orders
+[ ] order_items
+[ ] payments
+
+Understand:
+
+[ ] Primary Keys
+[ ] Foreign Keys
+[ ] Constraints
+[ ] NOT NULL
+[ ] UNIQUE
+[ ] CHECK
+
+Implement:
+
+[ ] INSERT
+[ ] SELECT
+[ ] UPDATE
+[ ] DELETE
+
+IMPORTANT NEW CONCEPT:
+
+SQL JOIN
+
+Learn:
+
+[ ] INNER JOIN
+[ ] LEFT JOIN
+[ ] JOIN multiple tables
+
+Examples:
+
+orders
+   |
+   +--- customers
+
+orders
+   |
+   +--- order_items
+             |
+             +--- products
+
+Learn:
+
+[ ] GROUP BY
+[ ] ORDER BY
+[ ] COUNT
+[ ] SUM
+[ ] AVG
+
+IMPORTANT:
+
+Do NOT just copy SQL queries.
+
+Understand what every JOIN does.
+
+CONCEPTS:
+
+- SQL
+- SQLite
+- Relational Database
+- Primary Keys
+- Foreign Keys
+- JOIN
+- Aggregation
+- Constraints
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 21 - DATABASE TRANSACTIONS
+==================================================
+
+IMPORTANT NEW CONCEPT.
+
+Understand:
+
+BEGIN
+COMMIT
+ROLLBACK
+
+Checkout transaction:
+
+BEGIN
+
+1. Create Order
+2. Create Order Items
+3. Update Inventory
+4. Create Payment
+
+If everything succeeds:
+
+COMMIT
+
+If anything fails:
+
+ROLLBACK
+
+Implement:
+
+[ ] Database transaction
+[ ] Commit
+[ ] Rollback
+[ ] Exception handling
+
+Tests:
+
+[ ] Successful transaction
+[ ] Failed transaction
+[ ] Rollback
+[ ] Data consistency after failure
+
+CONCEPTS:
+
+- Transactions
+- ACID basics
+- Atomicity
+- Rollback
+- Consistency
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 22 - SQL REPOSITORIES
+==================================================
+
+Create:
+
+[ ] SqlProductRepository
+[ ] SqlCustomerRepository
+[ ] SqlOrderRepository
+[ ] SqlPaymentRepository
+
+Implement:
+
+[ ] add()
+[ ] get()
+[ ] get_all()
+[ ] update()
+[ ] remove()
+
+Connect Services to SQL repositories.
+
+Verify:
+
+[ ] Services do not need major changes
+[ ] Repository Protocol still works
+[ ] SQL implementation is replaceable
+
+Compare:
+
+InMemory
+   |
+JSON
+   |
+SQLite
+
+All should satisfy the same abstraction.
+
+Tests:
+
+[ ] SQL repository tests
+[ ] SQL CRUD tests
+[ ] Relationship tests
+[ ] JOIN queries
+[ ] Foreign key behavior
+
+CONCEPTS:
+
+- Repository Pattern
+- Dependency Inversion
+- SQL
+- SQLite
+- Abstraction
+- Persistence
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 23 - ADVANCED PYTEST
+==================================================
+
+Review and expand testing.
+
+[ ] Fixtures
+[ ] pytest.raises()
+[ ] Mock
+[ ] Parametrization
+[ ] Temporary database
+[ ] Temporary files
+[ ] Repository fixtures
+[ ] Service fixtures
+
+Parametrize:
+
+[ ] Product validation
+[ ] Discount types
+[ ] Payment methods
+[ ] Order states
+[ ] Inventory cases
+
+Test:
+
+[ ] Business rules
+[ ] Integration workflows
+[ ] Repository behavior
+[ ] Transaction behavior
+
+CONCEPTS:
+
+- pytest fixtures
+- pytest.raises
+- pytest.mark.parametrize
+- Mock
+- Integration testing
+- Test isolation
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 24 - DECORATORS
+==================================================
+
+IMPORTANT NEW PYTHON CONCEPT.
+
+Learn:
+
+[ ] What is a decorator?
+[ ] Functions as objects
+[ ] Higher-order functions
+[ ] @decorator syntax
+[ ] functools.wraps
+
+Create:
+
+[ ] @log_execution
+[ ] @validate_input if appropriate
+
+Use decorators carefully.
+
+Tests:
+
+[ ] Decorator behavior
+[ ] Original function behavior
+[ ] Function metadata preserved
+
+CONCEPTS:
+
+- Decorators
+- Higher-order functions
+- Closures
+- functools.wraps
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 25 - ITERATORS AND GENERATORS
+==================================================
+
+IMPORTANT NEW PYTHON CONCEPT.
+
+Learn:
+
+[ ] Iterable
+[ ] Iterator
+[ ] iter()
+[ ] next()
+[ ] yield
+[ ] Generator
+
+Implement a useful generator.
+
+Example:
+
+[ ] Iterate over products
+[ ] Iterate over large order collections
+[ ] Stream report data
+
+Understand:
+
+Why use a generator instead of
+returning a complete list?
+
+Tests:
+
+[ ] Generator output
+[ ] Generator iteration
+[ ] Empty generator
+
+CONCEPTS:
+
+- Iterators
+- Generators
+- yield
+- Memory efficiency
+- Lazy evaluation
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 26 - REPORTING
+==================================================
+
+Create:
+
+ReportService
+
+Implement:
+
+[ ] Total orders
+[ ] Total revenue
+[ ] Average order value
+[ ] Best selling products
+[ ] Most active customers
+[ ] Products with low stock
+[ ] Revenue by month
+[ ] Revenue by category
+[ ] Revenue by payment method
+[ ] Order status summary
+
+Use:
+
+[ ] collections
+[ ] datetime
+[ ] Decimal
+[ ] SQL aggregation where appropriate
+
+Tests:
+
+[ ] Total orders
+[ ] Revenue
+[ ] Average order
+[ ] Best sellers
+[ ] Monthly revenue
+[ ] Category revenue
+[ ] Low stock products
+
+CONCEPTS:
+
+- Data aggregation
+- collections
+- datetime
+- Decimal
+- SQL aggregation
+- Business Reporting
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 27 - CLI APPLICATION
+==================================================
+
+Create:
+
+main.py
+
+Main menu:
+
+==============================
+   E-COMMERCE SYSTEM
+==============================
+
+1. Customers
+2. Products
+3. Cart
+4. Orders
+5. Payments
+6. Reports
+7. Exit
+
+Implement:
+
+[ ] Customer menu
+[ ] Product menu
+[ ] Cart menu
+[ ] Order menu
+[ ] Payment flow
+[ ] Reports menu
+[ ] Exit
+
+Handle:
+
+[ ] Invalid input
+[ ] Invalid IDs
+[ ] Invalid numbers
+[ ] Invalid dates
+[ ] Invalid payment methods
+[ ] Business exceptions
+[ ] Application errors
+
+IMPORTANT:
+
+Keep business logic OUT of main.py.
+
+main.py should primarily:
+
+[ ] Read input
+[ ] Call services
+[ ] Display results
+[ ] Handle user-facing errors
+
+CONCEPTS:
+
+- Application Layer
+- CLI
+- User Input
+- Error Handling
+- Separation of Concerns
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 28 - LOGGING
+==================================================
+
+Implement proper logging.
+
+Create logger:
+
+ecommerce
+
+Log:
+
+[ ] Order creation
+[ ] Payment processing
+[ ] Inventory changes
+[ ] Checkout
+[ ] Discount application
+[ ] Notification
+[ ] Errors
+
+Use:
+
+[ ] DEBUG
+[ ] INFO
+[ ] WARNING
+[ ] ERROR
+
+Create log file if appropriate.
+
+Understand:
+
+[ ] Why logging is better than print()
+[ ] Log levels
+[ ] Production debugging
+[ ] Logging configuration
+
+CONCEPTS:
+
+- logging
+- log levels
+- debugging
+- production practices
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 29 - CODE QUALITY
+==================================================
+
+Review entire project.
+
+[ ] Review type hints
+[ ] Review naming
+[ ] Remove duplicated code
+[ ] Remove unused imports
+[ ] Remove unused variables
+[ ] Fix spelling mistakes
+[ ] Add useful docstrings
+[ ] Improve exception messages
+[ ] Check circular imports
+[ ] Check package structure
+[ ] Review imports
+[ ] Review Decimal usage
+[ ] Review database connections
+[ ] Review transaction handling
+[ ] Review decorators
+[ ] Review generators
+[ ] Review Strategy Pattern
+[ ] Review Dependency Injection
+[ ] Run pytest
+[ ] Run mypy if configured
+[ ] Review requirements.txt
+[ ] Review .gitignore
+[ ] Update README.md
+
+CONCEPTS:
+
+- Clean Code
+- Refactoring
+- Type Checking
+- Project Organization
+- Maintainability
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 30 - FINAL TESTING
+==================================================
+
+Run complete pytest suite.
+
+Test:
+
+[ ] Product creation
+[ ] Product validation
+[ ] Product status
+[ ] Stock management
+[ ] Customer creation
+[ ] Order Item
+[ ] Order creation
+[ ] Cart
+[ ] Cart calculations
+[ ] Discount
+[ ] Checkout
+[ ] Inventory reservation
+[ ] Payment success
+[ ] Payment failure
+[ ] Notification
+[ ] Repository operations
+[ ] JSON persistence
+[ ] SQLite operations
+[ ] SQL JOIN
+[ ] Transactions
+[ ] Rollback
+[ ] Complete workflow
+[ ] Reports
+[ ] Error handling
+[ ] Decorators
+[ ] Generators
+
+[ ] Fix all failures
+[ ] Run pytest again
+[ ] All tests pass
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PHASE 31 - FINAL ARCHITECTURE REVIEW
+==================================================
+
+Before marking the project complete,
+I must be able to explain:
+
+[ ] What is a dataclass?
+[ ] What is an Enum?
+[ ] What is Decimal?
+[ ] Why should money use Decimal?
+[ ] What is composition?
+[ ] What is inheritance?
+[ ] What is polymorphism?
+[ ] What is Protocol?
+[ ] What is Structural Typing?
+[ ] What is Dependency Injection?
+[ ] What is Dependency Inversion?
+[ ] What is a Service?
+[ ] What is a Repository?
+[ ] Why use Repository Pattern?
+[ ] What is Strategy Pattern?
+[ ] Why use Strategy Pattern?
+[ ] What is a transaction?
+[ ] What is COMMIT?
+[ ] What is ROLLBACK?
+[ ] What is a Primary Key?
+[ ] What is a Foreign Key?
+[ ] What is JOIN?
+[ ] What is GROUP BY?
+[ ] What is SQL aggregation?
+[ ] What is a pytest fixture?
+[ ] What is parametrization?
+[ ] What is Mock?
+[ ] What is JSON persistence?
+[ ] What is serialization?
+[ ] What is logging?
+[ ] What is a decorator?
+[ ] What is functools.wraps?
+[ ] What is an iterator?
+[ ] What is a generator?
+[ ] What does yield do?
+[ ] Why use generators?
+[ ] Why should business logic not be inside main.py?
+[ ] How does checkout work?
+[ ] How does inventory reservation work?
+[ ] What happens when payment fails?
+[ ] How does the database transaction protect the data?
+
+FINAL ARCHITECTURE:
+
+                         CLI
+                          |
+                          v
+                 APPLICATION SERVICES
+                          |
+        +-----------------+-----------------+
+        |                 |                 |
+        v                 v                 v
+      Domain          Strategies       Infrastructure
+        |                 |                 |
+        |                 |                 +-- SQLite
+        |                 |                 +-- JSON
+        |                 |
+        |                 +-- Discount
+        |                 +-- Payment
+        |
+        +-- Customer
+        +-- Product
+        +-- Cart
+        +-- Order
+        +-- OrderItem
+        +-- Inventory
+
+
+Repository Architecture:
+
+                 Repository (Protocol)
+                          |
+             +------------+------------+
+             |            |            |
+             v            v            v
+         InMemory       JSON         SQLite
+
+
+Payment Architecture:
+
+              PaymentProcessor
+                    |
+       +------------+------------+
+       |            |            |
+       v            v            v
+     Cash         VISA        PayPal
+                    |
+              Bank Transfer
+
+
+Discount Architecture:
+
+               DiscountStrategy
+                      |
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+      NoDiscount  Percentage    Fixed
+
+
+Notification Architecture:
+
+              Notification
+                   |
+       +-----------+-----------+
+       |           |           |
+       v           v           v
+     Email       SMS         Push
+                              |
+                           WhatsApp
+
+
+==================================================
+FINAL KNOWLEDGE CHECK
+==================================================
+
+[ ] I can explain the entire architecture
+without looking at the source code.
+
+[ ] I can explain why each abstraction exists.
+
+[ ] I understand Repository Pattern.
+
+[ ] I understand Dependency Injection.
+
+[ ] I understand Strategy Pattern.
+
+[ ] I understand SQL JOIN.
+
+[ ] I understand SQL transactions.
+
+[ ] I understand COMMIT and ROLLBACK.
+
+[ ] I understand Decimal and financial precision.
+
+[ ] I understand decorators.
+
+[ ] I understand iterators.
+
+[ ] I understand generators.
+
+[ ] I understand pytest fixtures.
+
+[ ] I understand mocking.
+
+[ ] I understand integration testing.
+
+[ ] I can explain the complete checkout workflow.
+
+[ ] I can explain what happens when payment fails.
+
+[ ] I can explain how inventory stays consistent.
+
+[ ] I can build a similar application from scratch.
+
+----------------------------------------------
+STATUS: [ ]
+----------------------------------------------
+
+
+==================================================
+PROJECT COMPLETE
+==================================================
+
+[ ] ALL PHASES COMPLETED
+
+FINAL STATUS:
+
+[ ] DONE
+
+
+==================================================
+SKILLS COVERED
+==================================================
+
+Python Fundamentals
+[ ]
+
+OOP
+[ ]
+
+Classes & Objects
+[ ]
+
+Dataclasses
+[ ]
+
+Enums
+[ ]
+
+UUID
+[ ]
+
+Type Hints
+[ ]
+
+Decimal
+[ ]
+
+Financial Precision
+[ ]
+
+Composition
+[ ]
+
+Inheritance
+[ ]
+
+Polymorphism
+[ ]
+
+Protocol
+[ ]
+
+Structural Typing
+[ ]
+
+Dependency Injection
+[ ]
+
+Dependency Inversion
+[ ]
+
+Service Layer
+[ ]
+
+Repository Pattern
+[ ]
+
+Strategy Pattern
+[ ]
+
+Custom Exceptions
+[ ]
+
+Business Rules
+[ ]
+
+JSON
+[ ]
+
+File I/O
+[ ]
+
+Serialization
+[ ]
+
+Deserialization
+[ ]
+
+SQLite
+[ ]
+
+SQL
+[ ]
+
+Primary Keys
+[ ]
+
+Foreign Keys
+[ ]
+
+JOIN
+[ ]
+
+GROUP BY
+[ ]
+
+SQL Aggregation
+[ ]
+
+Transactions
+[ ]
+
+COMMIT
+[ ]
+
+ROLLBACK
+[ ]
+
+pytest
+[ ]
+
+pytest.raises
+[ ]
+
+pytest Fixtures
+[ ]
+
+pytest Parametrization
+[ ]
+
+Mocking
+[ ]
+
+Integration Testing
+[ ]
+
+Logging
+[ ]
+
+Decorators
+[ ]
+
+functools.wraps
+[ ]
+
+Iterators
+[ ]
+
+Generators
+[ ]
+
+yield
+[ ]
+
+Refactoring
+[ ]
+
+Clean Code
+[ ]
+
+
+==================================================
+FINAL GOAL
+==================================================
+
+Build a medium-sized Python application
+without blindly following a tutorial.
+
+I should understand:
+
+WHAT I am building
+
+WHY I am building it
+
+HOW the components communicate
+
+WHY each abstraction exists
+
+HOW business rules are enforced
+
+HOW money is handled safely
+
+HOW inventory is kept consistent
+
+HOW transactions protect data
+
+HOW SQL JOINs work
+
+HOW to test the system
+
+HOW to handle failures
+
+HOW to change one component
+without breaking the entire system
+
+HOW to build a similar application
+from scratch.
+
+
+==================================================
+END
+==================================================

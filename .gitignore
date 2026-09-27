@@ -1,0 +1,22 @@
+# Environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Data files (SQLite لاحقاً بـPhase 20)
+data/*.db
+data/*.sqlite3
+
+# Environment variables
+.env
