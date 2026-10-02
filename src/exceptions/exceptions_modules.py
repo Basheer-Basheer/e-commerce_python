@@ -47,3 +47,5 @@ class OrderCantBeConfirmedError(ECommerceException):
 
 class ItemReserveError(ECommerceException):
     pass
+class UnexpectedPaymentStatusError(ECommerceException):
+    pass

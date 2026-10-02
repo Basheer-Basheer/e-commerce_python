@@ -1,13 +1,13 @@
-from services.checkout_service import CheckoutService
 from services.inventory_reserve_service import InventoryService
-from repository.payment_protocol import PaymentService
+from repository.payment_protocol import Payment, PaymentService
 from src.repository.notification_prorocol import EmailNotification, NotificationService
 from uuid import UUID
 from src.cart.cart_model import Cart
-from src.repository.payment_protocol import PaymentMStatus, PaymentProcessor
+from repository.payment_protocol import PaymentMStatus, PaymentProcessor
 from src.order.order_model_module import Order
 from src.services.checkout_service import CheckoutService
-from src.services.customer_service import CustomerService
+from src.services.order_service import OrderService
+from src.exceptions.exceptions_modules import UnexpectedPaymentStatusError
 
 
 class OrderWorkflowService:
@@ -17,15 +17,17 @@ class OrderWorkflowService:
         inventory_service: InventoryService,
         payment_service: PaymentService,
         notification_service: NotificationService,
+        order_service: OrderService,
     ) -> None:
         self.check_out_service = check_out_service
         self.inventory_service = inventory_service
         self.payment_service = payment_service
         self.notification_service = notification_service
+        self.order_service = order_service
 
     def place_order(
         self, customer_id: UUID, cart: Cart, payment_method: PaymentProcessor
-    ):
+    ) -> tuple[Order, Payment]:
         order: Order = self.check_out_service.checkout(customer_id, cart)
         customer = order.customer
         amount = order.calculate_total()
@@ -34,22 +36,21 @@ class OrderWorkflowService:
             payment_method, amount, customer, order
         )
         if payment_ser.status == PaymentMStatus.SUCCESS:
-            order.confirm_order()
-            notification = EmailNotification()
+
+            self.order_service.confirm_order(order.order_id)
             self.notification_service.make_notification(
                 customer.name,
-                f"order {order.order_id} with total {order.calculate_total()} has been completed successfully .. ",
+                f"order {order.order_id} with total {amount} has been completed successfully .. ",
             )
-            print("successfully")
         elif payment_ser.status == PaymentMStatus.FAILED:
-            for item in cart.items:
-                self.inventory_service.release_stock(
-                    item.get("product_id"), item.get("product_quantity")
-                )
-                notification = EmailNotification()
-                self.notification_service.make_notification(
-                    customer.name,
-                    f"order {order.order_id} with total {order.calculate_total()} has been rejected",
-                )
+            self.order_service.cancel_order(order.order_id)
 
-            print("unsuccessfully")
+            self.notification_service.make_notification(
+                customer.name,
+                f"order {order.order_id} with total {amount} has been rejected",
+            )
+        else:
+            self.order_service.cancel_order(order.order_id)
+            raise UnexpectedPaymentStatusError("Something happened")
+
+        return (order, payment_ser)

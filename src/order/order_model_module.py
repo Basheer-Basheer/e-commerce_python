@@ -57,7 +57,4 @@ class Order:
             raise ValueError("Please insert a valid discount")
         self.discount = amount
 
-    def confirm_order(
-        self,
-    ) -> None:
-        self.status = OrderStatusEnum.PAID
+ 

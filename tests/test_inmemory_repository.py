@@ -2,7 +2,7 @@ import pytest
 from uuid import uuid4
 from decimal import Decimal
 
-from repository.Inmemoryrepository import InMemoryRepository
+from repository.inmemoryrepository import InMemoryRepository
 from product.product_model import Product, ProductCategoryEnum
 from exceptions.exceptions_modules import ItemNotFoundError
 

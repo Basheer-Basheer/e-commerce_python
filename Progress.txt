@@ -1111,14 +1111,14 @@ Use Dependency Injection.
 
 Tests:
 
-[ ] Email
-[ ] SMS
-[ ] Push
-[ ] WhatsApp
-[ ] Empty recipient
-[ ] Empty message
-[ ] Mock
-[ ] assert_called_once_with()
+[ DONE ] Email
+[ DONE ] SMS
+[ DONE ] Push
+[ DONE ] WhatsApp
+[ DONE ] Empty recipient
+[ DONE ] Empty message
+[ DONE ] Mock
+[ DONE ] assert_called_once_with()
 
 CONCEPTS:
 
@@ -1129,7 +1129,7 @@ CONCEPTS:
 - Polymorphism
 
 ----------------------------------------------
-STATUS: [ ]
+STATUS: [ DONE ]
 ----------------------------------------------
 
 
@@ -1164,35 +1164,35 @@ Notification
 
 Implement complete workflow.
 
-[ ] Validate Customer
-[ ] Validate Cart
-[ ] Validate Products
-[ ] Validate Stock
-[ ] Calculate subtotal
-[ ] Apply discount
-[ ] Reserve inventory
-[ ] Process payment
-[ ] Create Order
-[ ] Confirm inventory
-[ ] Send notification
+[ DONE ] Validate Customer
+[ DONE ] Validate Cart
+[ DONE ] Validate Products
+[ DONE ] Validate Stock
+[ DONE ] Calculate subtotal
+[ DONE ] Apply discount
+[ DONE ] Reserve inventory
+[ DONE ] Process payment
+[ DONE ] Create Order
+[ DONE ] Confirm inventory
+[ DONE ] Send notification
 
 Failure scenarios:
 
-[ ] Missing customer
-[ ] Empty cart
-[ ] Missing product
-[ ] Insufficient stock
-[ ] Payment failure
-[ ] Notification failure
+[ DONE ] Missing customer
+[ DONE ] Empty cart
+[ DONE ] Missing product
+[ DONE ] Insufficient stock
+[ DONE ] Payment failure
+[ DONE ] Notification failure
 
 Tests:
 
-[ ] Complete successful workflow
-[ ] Payment failure
-[ ] Inventory failure
-[ ] Notification failure
-[ ] Correct rollback behavior
-[ ] Mock external dependencies
+[ DONE ] Complete successful workflow
+[ DONE ] Payment failure
+[ DONE ] Inventory failure
+[ DONE ] Notification failure
+[ DONE ] Correct rollback behavior
+[ DONE ] Mock external dependencies
 
 IMPORTANT:
 
@@ -1211,7 +1211,7 @@ CONCEPTS:
 - Business Logic
 
 ----------------------------------------------
-STATUS: [ ]
+STATUS: [ DONE ]
 ----------------------------------------------
 
 
