@@ -33,3 +33,18 @@ class OrderItem:
 
     
 
+    def to_dict(self) -> dict:
+        data ={
+            "product_id" : str(self.product.product_id),
+            "quantity" : self.quantity,
+            "unit_price": str(self.unit_price),
+            "order_item_id" : str(self.order_item_id),
+           
+                
+            }
+        return data
+    
+   
+
+    def get_Id(self)-> UUID:
+        return self.order_item_id

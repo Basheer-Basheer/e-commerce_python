@@ -57,4 +57,21 @@ class Order:
             raise ValueError("Please insert a valid discount")
         self.discount = amount
 
- 
+
+
+    def to_dict(self) -> dict:
+        data ={
+                "customer_id" : str(self.customer.customer_id),
+                "discount" : str(self.discount),
+                "items_ids": [str(i.order_item_id) for i in self.items],
+                "order_id" : str(self.order_id),
+                "status" : self.status.name,
+                "created_date" : str(self.created_date),
+                
+            }
+        return data
+    
+   
+
+    def get_Id(self)-> UUID:
+        return self.order_id

@@ -50,9 +50,9 @@ class Cart:
 
         raise ProductNotFoundError("Product does not exist in the cart")
 
-    def update_quantity(self, product_id: str, new_quantity: int) -> None:
-        if not isinstance(product_id, str):
-            raise TypeError("please insert string id")
+    def update_quantity(self, product_id: UUID, new_quantity: int) -> None:
+        if not isinstance(product_id, UUID):
+            raise TypeError("please insert UUID id")
 
         if not isinstance(new_quantity, int):
             raise TypeError("please insert int quantity")

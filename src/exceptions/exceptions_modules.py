@@ -49,3 +49,7 @@ class ItemReserveError(ECommerceException):
     pass
 class UnexpectedPaymentStatusError(ECommerceException):
     pass
+
+
+class NotMatchedObjects(ECommerceException):
+    pass

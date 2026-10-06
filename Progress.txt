@@ -1221,40 +1221,40 @@ PHASE 19 - JSON PERSISTENCE
 
 Learn:
 
-[ ] json.load()
-[ ] json.dump()
-[ ] Serialization
-[ ] Deserialization
+[ DONE ] json.load()
+[ DONE ] json.dump()
+[ DONE ] Serialization
+[ DONE ] Deserialization
 
 Create:
 
-[ ] JsonProductRepository
-[ ] JsonCustomerRepository
-[ ] JsonOrderRepository
+[ DONE ] JsonProductRepository
+[ DONE ] JsonCustomerRepository
+[ DONE ] JsonOrderRepository
 
 Create:
 
-[ ] data/products.json
-[ ] data/customers.json
-[ ] data/orders.json
+[ DONE ] data/products.json
+[ DONE ] data/customers.json
+[ DONE ] data/orders.json
 
 Handle:
 
-[ ] Missing file
-[ ] Empty file
-[ ] Invalid JSON
-[ ] Invalid object data
+[ DONE ] Missing file
+[ DONE ] Empty file
+[ DONE ] Invalid JSON
+[ DONE ] Invalid object data
 
 Tests:
 
-[ ] Save
-[ ] Load
-[ ] Add
-[ ] Get
-[ ] Get all
-[ ] Remove
-[ ] Update
-[ ] Invalid JSON
+[ DONE ] Save
+[ DONE ] Load
+[ DONE ] Add
+[ DONE ] Get
+[ DONE ] Get all
+[ DONE ] Remove
+[ DONE ] Update
+[ DONE ] Invalid JSON
 
 CONCEPTS:
 
@@ -1265,7 +1265,7 @@ CONCEPTS:
 - Persistence
 
 ----------------------------------------------
-STATUS: [ ]
+STATUS: [ DONE ]
 ----------------------------------------------
 
 

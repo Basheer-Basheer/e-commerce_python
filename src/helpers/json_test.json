@@ -1,0 +1,29 @@
+{
+    "2285f425-7bb1-4905-b206-ce0b0165388e": {
+        "product_id": "2285f425-7bb1-4905-b206-ce0b0165388e",
+        "name": "producct-1",
+        "description": "product-1 desc",
+        "price": "1000.13",
+        "stock": "10",
+        "category": "ELECTRONICS",
+        "status": "ACTIVE"
+    },
+    "aa2e15f3-d984-4a78-9b98-a3b9aa8fa2e3": {
+        "product_id": "aa2e15f3-d984-4a78-9b98-a3b9aa8fa2e3",
+        "name": "producct-2",
+        "description": "product-2 desc",
+        "price": "2000.13",
+        "stock": "10",
+        "category": "ELECTRONICS",
+        "status": "ACTIVE"
+    },
+    "17c8c604-d7f5-4b61-9391-fee36d09d916": {
+        "product_id": "17c8c604-d7f5-4b61-9391-fee36d09d916",
+        "name": "producct-3",
+        "description": "product-1 desc",
+        "price": "3000.13",
+        "stock": "10",
+        "category": "ELECTRONICS",
+        "status": "ACTIVE"
+    }
+}

@@ -101,3 +101,33 @@ class Product:
             and amount > 0
             and amount <= self.stock
         )
+        
+        
+    def to_dict(self) -> dict:
+        data ={
+                "product_id" : str(self.product_id),
+                "name" : str(self.name),
+                "description" : str(self.description),
+                "price" : str(self.price),
+                "stock" : self.stock,
+                "category" : str(self.category.name),
+                "status" : str(self.status.name),
+            }
+        return data
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> Product:    
+        product :Product = Product(
+            name=data["name"],
+            description=data["description"],
+            price=Decimal(data["price"]),
+            stock=data["stock"],
+            category=ProductCategoryEnum[data["category"]],
+            status=ProductStatusEnum[data["status"]],
+        )
+        product.product_id = uuid.UUID(data["product_id"])
+        
+        return product
+
+    def get_id(self) -> uuid.UUID :
+        return self.product_id

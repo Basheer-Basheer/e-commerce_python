@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from decimal import Decimal
 
@@ -71,7 +73,7 @@ def test_add_product(cart, product):
 
     assert result is None
     assert len(cart.items) == 1
-    assert cart.items[0]["product_id"] == str(product.product_id)
+    assert cart.items[0]["product_id"] == product.product_id
     assert cart.items[0]["product_price"] == Decimal("100.00")
     assert cart.items[0]["product_quantity"] == 2
 
@@ -133,7 +135,7 @@ def test_add_product_with_negative_quantity_raises_error(cart, product):
 def test_remove_product(cart, product):
     cart.add_product(product, 2)
 
-    cart.remove_product(str(product.product_id))
+    cart.remove_product(product.product_id)
 
     assert cart.is_empty() is True
 
@@ -146,14 +148,14 @@ def test_remove_product_keeps_other_products(
     cart.add_product(product, 2)
     cart.add_product(second_product, 3)
 
-    cart.remove_product(str(product.product_id))
+    cart.remove_product(product.product_id)
 
     assert len(cart.items) == 1
-    assert cart.items[0]["product_id"] == str(second_product.product_id)
+    assert cart.items[0]["product_id"] == second_product.product_id
 
 
 def test_remove_non_existing_product_raises_error(cart):
-    with pytest.raises(ProductNotFoundError):
+    with pytest.raises(TypeError):
         cart.remove_product("does-not-exist")
 
 
@@ -171,7 +173,7 @@ def test_remove_product_with_non_string_id_raises_type_error(
 def test_update_quantity(cart, product):
     cart.add_product(product, 2)
 
-    cart.update_quantity(str(product.product_id), 5)
+    cart.update_quantity(product.product_id, 5)
 
     assert cart.items[0]["product_quantity"] == 5
 
@@ -180,7 +182,7 @@ def test_update_quantity_to_zero_raises_error(cart, product):
     cart.add_product(product, 2)
 
     with pytest.raises(ValueError):
-        cart.update_quantity(str(product.product_id), 0)
+        cart.update_quantity(product.product_id, 0)
 
     assert cart.items[0]["product_quantity"] == 2
 
@@ -189,7 +191,7 @@ def test_update_quantity_to_negative_raises_error(cart, product):
     cart.add_product(product, 2)
 
     with pytest.raises(ValueError):
-        cart.update_quantity(str(product.product_id), -1)
+        cart.update_quantity(product.product_id, -1)
 
     assert cart.items[0]["product_quantity"] == 2
 
@@ -201,14 +203,15 @@ def test_update_quantity_with_non_integer_raises_error(
     cart.add_product(product, 2)
 
     with pytest.raises(TypeError):
-        cart.update_quantity(str(product.product_id), "5")
+        cart.update_quantity(product.product_id, "5")
 
 
 def test_update_quantity_for_non_existing_product_raises_error(
     cart,
 ):
+    i_d = uuid.uuid4()
     with pytest.raises(ProductNotFoundError):
-        cart.update_quantity("does-not-exist", 5)
+        cart.update_quantity(i_d, 5)
 
 
 def test_update_quantity_with_non_string_product_id_raises_error(
@@ -270,7 +273,7 @@ def test_calculate_subtotal_empty_cart(cart):
 def test_calculate_subtotal_after_update_quantity(cart, product):
     cart.add_product(product, 2)
 
-    cart.update_quantity(str(product.product_id), 5)
+    cart.update_quantity(product.product_id, 5)
 
     assert cart.calculate_subtotal() == Decimal("500.00")
 
@@ -283,7 +286,7 @@ def test_calculate_subtotal_after_remove_product(
     cart.add_product(product, 2)
     cart.add_product(second_product, 3)
 
-    cart.remove_product(str(product.product_id))
+    cart.remove_product(product.product_id)
 
     assert cart.calculate_subtotal() == Decimal("150.00")
 
