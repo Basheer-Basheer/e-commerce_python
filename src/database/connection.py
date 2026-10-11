@@ -272,13 +272,30 @@ if data is not None:
         )
 
 
-for item in new_data:
-    print(
-        f"{item['name']} purchased {item['item']} -> qty:{item['quantity']} / price is :{item["unit_price"]} ||| with total amount : {item['unit_price'] *item['quantity'] }"
-    )
-    print("--"*20)
+# for item in new_data:
+#     print(
+#         f"{item['name']} purchased {item['item']} -> qty:{item['quantity']} / price is :{item["unit_price"]} ||| with total amount : {item['unit_price'] *item['quantity'] }"
+#     )
+#     print("--" * 20)
 
 
+def group_by_customer() -> list | None:
+    connection = connect()
+    cursor = connection.cursor()
+    query = """SELECT CUS.name, COUNT(ORD.id)
+FROM customers CUS
+JOIN orders ORD
+    ON CUS.id = ORD.customer_id
+GROUP BY CUS.name"""
+    cursor.execute(query)
+    data = cursor.fetchall()
+    connection.close()
+    return data
+
+customers = group_by_customer()
+if customers is not None:
+    for i in customers:
+            print(i)
 connection.commit()
 
 connection.close()
