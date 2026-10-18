@@ -27,21 +27,6 @@ class SqlOrderRepository:
         self.table_name = table_name
         self.id_column = id_column
 
-    # def _load_data(self):
-    #     try:
-    #         with open(self.path, "r") as file:
-    #             content = file.read()
-
-    #         if not content.strip():
-    #             return {}
-
-    #         return json.loads(content)
-
-    #     except FileNotFoundError:
-    #         return {}
-
-    #     except json.JSONDecodeError:
-    #         raise ValueError("Invalid JSON file")
 
     def add(self, obj_id: UUID, obj: Order) -> Order:
         if not (obj.get_Id() == obj_id):
